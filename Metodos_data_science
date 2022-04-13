@@ -1,0 +1,418 @@
+================================================ Pre-requisitos: ================================================
+
+== Instalar version especifica de un modulo en pip
+    pip install tensorflow==1.15
+
+== Instalar la extencion de junyperlab para trabajar con los archivos de datascience. Para tener un archivo ejecutable al momento del tipo junyperlab solo 
+le asignamos la exencion *.ipynb con esto se genera un archivo de interprete junyperlab en visual studio code. Tambien nos permite configurar el interprete que 
+usaremos para el junyperlab en este caso el entorno virtual que creamos.
+
+== Instalar las siguientes liberias:
+    pip install pandas
+    pip install NumPy
+    pip install matplotlib
+    pip install IPython
+    pip install scikit-learn
+
+== Definicion de la libreria
+Pandas = Nos permite leer un dataset en un dataframe, calcula estadisticos basicos y otros.
+Numpy = Es el equivalente de matlab, permite hacer simulaciones y calculo numerico.
+matplotlib = Nos permite realizar representaciones graficas de alta calidad en 2d. (histogramas, diaramas de barra, mapa de calor, power spectrals etc...) Edita y manipula el plot.
+IPython = Nos permite realizar calculos interactivos. se generan en gui y se pueden guardar en ficheros.
+scikit-learn = Se usa para realizar modelos predictivos y esta basado en pandas, numpy y matplotlib.
+
+================================================ Data Science: ================================================
+
+Etapa 1 --> Enmarcar el problema, hacer las preguntas adecuadas.
+    ¿Cual es el objetivo de la empresa?
+    ¿Que queremos estimar o predecir?
+
+Etapa 2 --> Adquirir y preparar los datos (xml, json, csv, bd)
+    ¿Que recursos tenemos para obtener datos?
+    ¿Que información es relevante?
+    Limpiar y filtrar datos para si posterior analisis.
+
+Etapa 3 --> Explorar los datos
+    Visualizar los datos.
+    Localizar en los graficos posibles tendencias.
+    Correlaciones o patrones.
+
+Etapa 4 --> Modelizar y evaluar los datos
+    Utilizar algun algoritmo inovador para crear el modelo evaluador.
+
+Etapa 5 --> Comunicar los resultados y puesta en producción
+    ¿Que resultados hemos obtenidos?
+    ¿Que hemos aprendidos?
+    ¿Los resultados tienen sentido? 
+
+== Los datos se pueden analizar con 2 puntos de vista diferente: 
+
+    Analisis retrospectivo
+    Analisis predictivo
+        -Conjunto de algoritmos estadisticos.
+            -Algoritmos supervisados. --> son algoritmos donde los datos historicos tienen un valor de salida y los datos de partida, atravez de los historicos y los parametros del modelo.
+            ejemplos - regreson lineal o logistica y arboles de decision.
+            -Algoritmos no supervisados. --> Trabajan sin variable de salida de los historicos, ej: clustering.
+
+Los datos historicos se construyen con datos del pasado.
+Podemos aeriguar los datos que faltan.
+COnstantemente se dividiran los dtos en 2 conjuntos:
+    * De entrenamiento
+    * De validación
+
+Los modelos suelen elaborar una funcion matematica como resultado.
+
+== Regla de pareto (Tareas y tiempo invertido.)
+    - Limpieza de datos. - 80% sera tiempo para limpiando datos / 20% iran a dar a las predicciones y contribuiran al  modelo. 
+    - Modelización  - 20%  del tiempo que modelaste se perdera / 80% del tiempo invertido contribuiran al modelo.
+
+- Data cleaning se puede automatizar porque la mayoria de veces tienes datos muy bien estructurados.
+- Modelizacion requiere mas trabajo manual.
+
+
+================================================ Limpieza de datos: ================================================
+
+La extructura de datos varia puede venir de un csv, en txt, base de datos, separados por coma, separados por dos puntos, necesitamos cambiar el tipo de dato, eliminar campos vacios, agregar 
+variables dummys.
+
+Para la limpieza de datos se usa Pandas.
+
+Los datos en Maching learning se estructuran en datasets (ficheros) que viene siendo como una tabla o un archivo excel o como si fuera un diccionario en python. Los datos pueden ser de 
+diferentes tipos de datos como int, float, str.
+
+Pasos para limpieza de datos:
+1.- Validar la estructura del archivo esto lo podemos hacer abriendo el archivo con un editor de texto para validar si esta separado por cual simbolo, tambien preguntar que representa 
+cada simbolo es decir si un dato lleva una ',' que significa esa coma para el documento, si las decimales se separan porque valor.
+
+2.- Clonamos el repositorio completo de git, nos situamos en la carpeta donde la clonaremos y enviamos el comando git clone:
+    git clone https://github.com/joanby/python-ml-course
+
+3.- Si el jupiter nootebook no te completa los comandos activarlo usando en la primera linea del notebook el siguiente comando:
+    %config IPCompleter.greedy=True
+
+4.- Si algun fichero no te carga en windows debe ser por las \ entonces debemos usar la barra / o encerrar todo sobre r""
+    pandas.read_cvs(r"C:\user\titanic3.cvs")
+
+5.- Vamos a leer nuestro archivo titanic3.csv para esto importamos pandas y usamos la funcion read_csv y usaremos head para leer los primeros valores del dataset.
+    
+    import pandas as pd
+    data = pd.read_csv('python-ml-course\datasets\/titanic\/titanic3.csv', sep = ',', dtype={'a':np.float64, 'b':np.int32}, header=0, names={'ingresos, 'edad'}, skiprows=12, index_col=None, skip_blank_lines=False, na_filter=False )
+    data.head()    
+
+    Ya que en windows se usa el slash inverso '\' se tiene que excluir como se indica en el paso 4.
+
+    Declaramos los parametros mas usados de read_csv:
+        sep -> Definimos el caracter que funje como separador en nuestro dataset, por default es ','. pero tambien se puede pasar como una expresion regular.
+        dtype -> formatea una columna a un tipo de dato que requieras ej: str, int, bool, int  se indica el nombre de la columna y el tipo de dato.
+        header -> Por defecto esta como ninguna y se usa la primera fila. Si queremos usar otra fila debemos definir el numero de columna.
+        names -> Indicamos el nombre de la columna y se puede usar para asignar un nombre a la cabecera, se crea un array.
+        skiprows -> Indica que se saltara la lectura de las filas que se indican y empezaria apartir de la siguiente fila.
+        index_col -> Asigna un nombre a las filas del dataset en este caso puedes copiar el valor de una columna y lo asignara a la fila del dataset.
+        skip_blank_lines -> Salta los valores que vienen en blanco o vacios que por default los rellenaba con NaN
+        na_filter -> Detecta los marcadores de datos que faltan en el dataset y elimina toda la fila donde encuentra algun valor vacio.
+
+
+6.- Ejemplo de uso de un path para no usar el directorio completo en cada llamado a un archivo.
+
+    import os
+    mainpath = 'G:\Mi unidad\Documentos\Escuela\Antony\Data_Science\python-ml-course\datasets'
+    filename = 'titanic/titanic3.csv'
+    fullpath = os.path.join(mainpath, filename)
+    data = pd.read_csv(fullpath)
+    data.head()
+
+Con esto importamos la libreria OS y definimos una variable que se llama mainpath que tendra el acceso a la carpeta general y tambien definiremos una variale filename que tendra acceso al
+contenido especifico del archivo que buscamos leer. Con la variable fullpath vamos a unir por medio de la libreria el archivo que vamos a leer con el metodo join. Como siguiente paso 
+hacemos un read del archivo csv y mandamos a llamar la variable fullpath que nos da la ventaja de adecuar el path al SO si sobra espacios lo ajusta. Con data head vemos las primeras lineas del
+dataset.
+
+7.- Agregar nombre de columnas a un dataset cuando vienen en archivos separados.
+
+    data_cols = pd.read_csv(mainpath + '/' + 'customer-churn-model\Customer Churn Columns.csv')
+    data_col_list = data_cols['Column_Names'].tolist()
+    data2 = pd.read_csv(mainpath + '/' + 'customer-churn-model\Customer Churn Model.txt', header = None, names = data_col_list)
+    data2.columns.values
+    data2.head()
+
+Creamos una variable llamada data_cols que leera el archivo que contiene el nombre de las columnas que vamos a asignar a nuestro dataset.
+Creamos una nueva variable que se llamara data_col_list, donde se definira el nombre de la columna que queremos leer y lo convertiremos a una lista para que se puedan insertar correctamente.
+Creamos la variable data2 que leera nuestros dataset y agregaremos los parametros header=None que indica que no queremos que importe los header del dataset y agregaremos names=data_col_list que cargara los nuevos
+nombres de las columnas. 
+Hacemos un data2.head() y vemos que los nombres de las columnas ahora se asignaron al dataset que importamos.
+
+
+================== Carga manual de datos.
+
+Cuando los dataset son muy amplios si se usa pandas puedes saturar tu memoria ram ya que nos podemos encontrar con archivos grandes de 10Gb o mas. En estos casos se puede utilizar un metodo de lectura de ficheros que 
+tienes python que es open y lee linea por linea por lo cual se usa un ciclo for y se va eliminando conforme vaya leyendo linea por linea. 
+Cuando abrimos un archivo se abre en solo lectura. Ejemplo:
+
+    data3 = open(mainpath + '/' + 'customer-churn-model\Customer Churn Model.txt', 'r')
+    cols = data3.readline().strip().split(',')
+    n_cols = len(cols)
+    n_cols
+
+    counter = 0
+    main_dict = {}
+    for col in cols:
+        main_dict[col] = []
+    
+    for line in data3:
+        values = line.strip().split(',')
+        for i in range(len(cols)):
+            main_dict[cols[i]].append(values[i])
+        counter += 1
+
+    print ('El data set tiene %d filas y %d columnas' % (counter, n_cols))
+
+    df3 = pd.DataFrame(main_dict)
+    df3.head()
+
+Explicacion del codigo: 
+    Saber el numero de columnas
+    a = La primera parte es abrir el archivo usando 'open' y llamando a nuestra variable mainpath y la ruta y usaremos la propiedad 'r' para indicar que lo abrimos en solo lectura. 
+    Creamos una variable llamada cols y mandaremos a llamar la variable data3 y aplicaremos la funcion readline() para leer una sola linea, tambien usaremos la funcion strip() para eliminar los espacios en blanco y por ultimo usamos split() para usar como separador la coma.
+    creamos una vairable para conocer el numero de columnas y usamos la funcion len para leer las lineas.
+    Imprimimos n_cols para saber el numero de lienas.
+
+    saber el numero de filas.
+    b = Creamos una variable contador con el valor 0.
+    Creamos un diccionario vacio que nos servira para llenar los datos.
+    Creamos un bucle for que leera las columnas y las asignara al diccionario main_dict donde indicamos que la posicion que tomara en el diccionario sera el de la llave.
+
+    Acontinuacion asignaremos con un bucle for el formato para la lectura de las lineas por ello indicamos un ciclo con la variable linea in data3 y le decimos que values sera la linea leida en el ciclo y aplicara el mismo tratamiento que las columnas le eliminamos espacios con strip() y usamos split(',') para separar por comas. 
+    Con esto ya tenemos en formato el resultado de la linea para insertarlo en el diccionario por lo cual crearemos un segundo ciclo donde i recorrera el rango dentro de la longitud de columnas y haremos que en main_dict lea colsen la posición que se encuentre i y haga un append de values que tiene en 'i' con esto estamos sumando el valor de lo que esta leyendo el ciclo por columna.
+    El paso siguiente es incrementar la variable contador en 1.
+    Ahora solo imprimimos los valores del contador en este caso usamos la impresion con posicionamiento con el simbolo % y al final mandamos a llamar las variables en orden en esta caso counter y n_colums para saber el total de columnas y filas de nuestro dataframe.
+
+    Con lo que hicimos ya tenemos creado un dataframe como se hace en pandas y podemos recuperarlo, para este caso definimos la variable df3 y lo mandamos a llamar con la funcion pd.Dataframe en este caso mandamos a llamar el diccionario que rellenamos e imprimimos un head del df.
+
+
+================== Leer datos desde una url:
+- Metodo usando pandas:
+    medals_url = 'http://winterolympicsmedals.com/medals.csv'
+    medals_data = pd.read_csv(medals_url)
+    medals_data.head()
+
+Con esto importamos un dataframe desde una url con el metodo pandas. En la primera linea definimos la url, creamos una variable que almacenara la lectura del CSV y mandamos a imprimir con un head las primeras lineas del
+dataframe. 
+
+- Metodo Manual usando liburl
+    
+    import csv
+    import urllib3
+
+    medals_url = 'http://winterolympicsmedals.com/medals.csv'
+    response = urllib3.PoolManager().request('GET',medals_url)
+    response_csv = csv.reader(response.data.decode('utf-8').split('\n'))
+    medals_cols = next(response_csv)
+    medals_n_cols = len(medals_cols)
+    #medals_n_cols
+
+    counter_medals = 0
+    medals_dict = {}
+    for col in medals_cols:
+    medals_dict[col] = []
+        for line in response_csv:
+            for i in range(medals_n_cols):
+                medals_dict[medals_cols[i]].append(line[i])
+            counter_medals += 1
+
+    print ("El data set tiene %d filas y %d columnas"%(counter_medals, medals_n_cols))
+    
+    df5 = pd.DataFrame(medals_dict)
+    df5.head()
+
++ Para el metodo manual en primera instancia cargamos 2 librerias csv y urllib3 que nos serviran para escrapear la web.
++ Segundo paso creamos una variable response que creara un poolmanager request y con el metodo get obtendremos lo que le pasamos con la varialbe medals_url que es la informacion.
++ Siguiente paso convertimos nuestro documento a csv y lo decodificamos de byte a str y indicamos el separador que es \n.
++ definimos las columnas de nuestro dataset usamos next para leer la primera lista hasta el deliminatador definido y leeremos de respose_csv.
++ Extraemos el numero de columnas con len de medals_cols ya que lo usaremos para recorrer el ciclo for.
+
++ Iniciamos la variable counter y medals_dict vacias para usarlas en el for.
++ Recorreremos un ciclo for donde col en medal_cols agregara al diccionario la variable que esta en lectura col y con valor vacio generando un diccionario de todos los 8 encabezados.
++ Crearemos un nuevo ciclo for para leer las lineas y agregarlas en el valor del diccionario como valores los resultados. donde line in el valor response_csv y este a su vez un ciclo for anidado donde i en el rango de 
+medals_n_cols que nos guarda el numero de longitud de los campos keys, mandamos a llamar el diccionario y le indicamos que del valor i que esta leyendo del diccionario append el valor en la tabla de la linea.
++ Aumentamos el contador para leeer la siguiente linea en la siguiente iteración.
++ Mandamos a imprimir el valor de las columnas y las filas.
++ Definimos el dataframe y lo mandamos a leer con pandas el diccionario que acabamos de crear.
++ revisamos que el encabezado sea correcto.
+
+================== Leer datos desde una Excel:
+Para leer datos desde un Excel xls, primero hay que instalar la libreria de excel con pip
+
+    pip install xlrd
+
+Para leer los archivos de excel xlsx necesitaremos otra libreria mas que instalaremos con pip
+
+    pip install openpyxl
+
+para convertir archivos de excel a xls necesitamos instalar una libreria, esta libreria esta obsoleta por lo cual se recomienda usar xlsx de ahora en adelante:
+    pip install xlwt
+
+
+================== Convertir en funcion nuestro codigo de lectura de un CSV desde url
+
+EN el siguiente codigo vamos a crear una funcion y vamos a definir parametros con valores por default pero que se pueden reescribir siempre que mandemos a llamar nuestra funcion.
+
+    #Creamos la funcion y definimos las variables que podemos pasar cuando llamamos nuestra funcion para poder cambiarlas.
+    def conv_csv_df(url, filename, sep = ',', delim = '\n', encoding='utf-8'):
+        #Primero importamos la libreria.
+        import csv
+        import urllib3
+
+        #Creamos un response con la url que vamos a leer y comenzamos dando formato al csv para convertirlo en str y delimitarlo. Tambien recorremos la lectura del nombre de las columnas y medimos la longitud.
+        response = urllib3.PoolManager().request('GET',url)
+        response_csv = csv.reader(response.data.decode(encoding).split(delim))
+        medals_cols = next(response_csv)
+        medals_n_cols = len(medals_cols)
+        medals_n_cols
+
+        #Creamos unas variables vacias para recorrer los arreglos con for y vamos a crear diccionarios y asignaremos el valor de keys a las columnas.
+        counter_medals = 0
+        medals_dict = {}
+        for col in medals_cols:
+            medals_dict[col] = []
+
+        #Creamos un segundo for para leer las lineas del csv y creamos un for anidado para recorrer en la longitud de las columnas y asignar al diccionario los valores a las columnas. Incrementamos el contador en 1.
+        for line in response_csv:
+            for i in range(medals_n_cols):
+                medals_dict[medals_cols[i]].append(line[i])
+            counter_medals += 1
+        
+        #Imprimimos cuantas columnas y filas tiene el data set usando referencia de posicion con %d.
+        print ("El data set tiene %d filas y %d columnas"%(counter_medals, medals_n_cols))
+        
+        Creamos la variable df5 que mandara a llamar nuestro diccioanrio medals_dic que hemos creado y lo leera con la funcion pandas. Hacemos una lectura del head.
+        df5 = pd.DataFrame(medals_dict)
+        df5.head()
+
+        # Guardamos el dataframe que hemos creado
+        mainpath = 'G:\Mi unidad\Documentos\Escuela\Antony\Data_Science\python-ml-course\datasets'
+        fullpath = os.path.join(mainpath, filename)
+
+        #Lo guardamos en CSV, JSON o excel
+        df5.to_csv(fullpath+'.csv')
+        df5.to_csv(fullpath+'.json')
+        df5.to_csv(fullpath+'.xls')
+        print(f'Los ficheros se han guardado correctamente en {fullpath} ')
+        return df5
+
+#Mandamos a llamar la funcion que hemos creado y le pasamos los valores que necesitamos configurar, por default ya tiene valores y mostramos el data frame con head de la variable creada pra llamar la funcion.
+medals_df= conv_csv_df(medals_url, 'atletas\downloaded_medals')
+medals_df.head()
+
+
+
+================================================ Limpieza de datos - ANALISIS PRELIMINAR DE LOS DATOS-: ================================================
+
+tip1: Si se quiere leer el csv desde github se debe copiar la url que te genera cuando le das visualizar en raw, ya que si copias la url que te da cuando te muestra la informacion en tablas en github no estaras leyendo el csv como tal si no una pagina de github.
+
+Leer documento Data_cleaning_2_analisis_preliminar_de_los_datos.ipynb <-- vienen documentados los escenarios.
+
+data.head(10) --> Leemos las primeras lineas de nuestro archivo creado data.
+data.tail(8) --> Leemos las ultimas 8 lineas de nuestro documento creado data.
+data.shape --> Nos indica cuantas filas y columnas tiene el dataset. En ese orden muestra filas y columnas.
+data.columns --> Nos da el indice de las columnas de los nombres.
+data.columns.values --> Nos muestra los nombres de la cabecera de nuestro df en formato array.
+
+== RESUMEN DE LOS ESTADISTICOS BASICOS DE LAS VARIABLES NUMERICAS.
+
+data.describe() --> Permite crear un resumen estadistico basico de las variables numericas. Nos proporiciona información que nos indica hacia donde se encuentra la tendencia en un dataframe nos devuelve un conteo de las lineas que tienen un valor numero no se cuentan los null. asi como la media el minimo maximo y porcentajes.
+
+data.dtypes --> Nos muestra el tipo de dato de todas las columnas. objeto es un str.
+
+== Missing Values.
+
+pd.isnull(data['body']) --> Nos devuelve con un valor booleano True si la fila evaluada de la columna body del dataframe contiene un valor nulo.
+pd.notnull(data['body']) --> Nos devuelve con un valor booleano True si la fila evaluada de la columna body del dataframe contiene un valor no nulo.
+pd.isnull(data['body']).values --> Nos devuelve los valores boleeanos de la expresion is null de la fila y lo convierte en un array.
+
+== Borrado de valores que faltan.
+
+data.dropna(axis=0, how='all') --> saremos dropna para borrar datos de na en este caso se define la axis en 0  y le definimos un how all que lo que hace es que elimina todas las filas que tengan en todas las columnas valores na.
+data2.dropna(axis=0, how='any') --> Elimina si almenos una de las columnas en la fila contiene NaN.
+
+
+== Computo de valores faltantes:
+
+data3 = data3.fillna(0) --> rellena todos los campos que tienen NaN por 0.
+data4 = data4.fillna('Desconocido') --> rellena todos los campos que tienen NaN por Desconocido.
+data5['body'] = data5['body'].fillna(0) | data5['home.dest'] = data5['home.dest'].fillna('Desconocido') --> rellena el campo de la columna definida que tenga valores NaN por el valor definido.
+data5['age'].fillna(data['age'].mean()) --> rellena todos los campos en la columna age que tienen un valor NaN por la media del campo age (hace un promedio de los valores.)
+data5['age'][1291] --> Muestra el valor de la columa age en la linea 1291.
+data5['age'].fillna(method='ffill')[1291] --> rellena los valores NaN de la columna age con el valor de la siguiente linea.
+data5['age'].fillna(method='bfill')[1291] --> rellena los valores NaN de la columna age con el valor de la linea anterior.
+
+== Variables dummy atravez de una funcion:
+
+Creamos una funcion que realizara el eliminado de una columna llamada var_name y se indica que las nuevas columnas llevaran un prefijo del nombre de la columna eliminada.
+    def createDummies(df, var_name):
+        #Cramos la variable dummy del df que indicaremos en la funcion y el varname que es el nombre de la columna. asignamos un prefijo a las nuevas columnas. Las columnas que se crean son la de los diferentes valores que existen en los valores de la columna con la que se trabajara en este caso female y male.
+        dummy = pd.get_dummies(df[var_name], prefix=var_name)
+        #Creamos df y le indicamos que borrara en el df la columna var_name en el eje de las columnas.
+        df = df.drop(var_name, axis=1)
+        #concatenaremos a df los valores dummys de las nuevas columnas que se generaron en dummy en el eje de las columnas.
+        df = pd.concat([df, dummy], axis=1)
+        #regresa el nuevo df despues de ser modificado.
+        return df
+
+
+
+================================================ Limpieza de datos - Plots y visualizacion-: ================================================
+
+Para los plots usaremos las siguientes librerias:
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+%matplotlib inline  --> permite que el plot se genere sobre la misma celda que ejecutamos el codigo.
+savefig('path_donde_guardar_im.jpeg') --> Nos ayuda a guardar los plots que creamos.
+data.plot(kind='scatter', x='Day Mins', y='Day Charge') --> Dibujamos un plot en relación a 2 columnas.
+
+------ Creamos una figura con subplots indicamos la dimención de la figura y que compartiran el nombre del eje x y y.
+figure, axs = plt.subplots(2,2, sharey=True, sharex=True)
+data.plot(kind='scatter', x='Day Mins', y='Day Charge', ax=axs[0][0])
+data.plot(kind='scatter', x='Night Mins', y='Night Charge', ax=axs[0][1])
+data.plot(kind='scatter', x='Day Calls', y='Day Charge', ax=axs[1][0])
+data.plot(kind='scatter', x='Night Calls', y='Night Charge', ax=axs[1][1])
+------
+
+------ Histograma de frecuencia (usando la formula logaritmica de sturges):
+#Obtener el numero de filas que tiene nuestro dataset.
+data.shape
+
+#Importamos la libreria de numpy para poder usar la base logaritmica
+#Definimos la funcion logaritmica y asignamos a 'k' el resultado como es un valor float no permite graficarla por lo cual convertimos a entero el valor, aplicamos la form de struger
+k = int(1+np.log2(3333))
+#Aplicamos a binds el resultado de la formula de sturges para crear las divisiones.
+plt.hist(data['Day Calls'], bins= k)
+#Creamos las etiquetas para y,x y titulo.
+plt.xlabel('Llamadas al dia.')
+plt.ylabel('Frecuencia')
+plt.title('Histograma de numero de llamadas al dia.')
+------
+
+------ Diagrama de caja y bigote:
+El diagrama de caja y bigote como su nombre lo dice nos representa la información solo en el eje de las y y nos dibuja en donde se encuentra la mayor información obteniedo los valores de la media, 25% y al 75% para dibujar la caja.
+
+#Creamos un boxplot de Day Calls.
+plt.boxplot(data['Day Calls'])
+#Asignamos nombre a la etiqueta en y y al title.
+plt.ylabel('Numero de llamadas diarias')
+plt.title('Boxplot de las llamadas diarias')
+
+#Verificamos los valores de Day Calls como media, min, max, 25%, 75% que esto nos ayuda a ver donde esta posicionada exactamente el boxplot.
+data['Day Calls'].describe()
+
+#Para saber el tamaño de la caja que es importante creamos una funcion que reste el valor quantil del 75% - 25% para saber el rango inter-quartilico de nuestro boxplot.
+IQR= data['Day Calls'].quantile(0.75)-data['Day Calls'].quantile(0.25)
+IQR
+
+#Sabiendo el rango inter-quartilico de nuestro boxplot podemos saber cual es el valor inferior del bigote usando la formula de quantil al 25% - 1.5* el rango interquartilico.
+data['Day Calls'].quantile(0.25) - 1.5*IQR
+
+#Sabiendo el rango inter-quartilico de nuestro boxplot podemos saber cual es el valor superior del bigote usando la formula de quantil al 75% + 1.5* el rango interquartilico.
+data['Day Calls'].quantile(0.75) + 1.5*IQR
+------
