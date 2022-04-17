@@ -416,3 +416,41 @@ data['Day Calls'].quantile(0.25) - 1.5*IQR
 #Sabiendo el rango inter-quartilico de nuestro boxplot podemos saber cual es el valor superior del bigote usando la formula de quantil al 75% + 1.5* el rango interquartilico.
 data['Day Calls'].quantile(0.75) + 1.5*IQR
 ------
+
+================================================ Limpieza de datos - Data Wrangling - Cirujia de datos.: ================================================
+
+El data wrangling nos permite trabajar con los datos y extraer información especifica o crear nuevos df, manipular la data, sumar columnas, crear nuevas columnasm, tablas etc.
+
+Ejemplos:
+
+account_length = data['Account Length'] <-- #Creamos una variable que contendra solo la columna length del dataset. con el tipo de datos --> pandas.core.series.Series
+subset = data[['Account Length', 'Phone', 'Eve Charge', 'Day Calls']] <-- Extraer mas de 1 columna. Cuando se extrae mas de 1 columna el objeto se convierte a DataFrame - pandas.core.frame.DataFrame.
+
+
+desired_colum = ['Account Length', 'Phone', 'Eve Charge', 'Night Calls'] <-- Extracción de columnas usando una variable y una lista, el resultado es el mismo se crea un objeto de tipo DataFrame
+subset = data[desired_colum]
+subset.head()
+
+
+desired_columns = ['Account Length', 'Vmail Message', 'Day Calls'] <-- Definimos las columnas deseadas que no queremos en nuestro nuevo DF.
+desired_columns
+all_columns_list = data.columns.values.tolist()
+all_columns_list
+sublist = [x for x in all_columns_list if x  not in desired_columns] <-- Usamos list comprehensions para eliminar las columnas deseadas y nos quedamos con una lista de todas las demas columnas.
+sublist
+subset = data[sublist] <-- Creamos un df usando la lista de las columnas que recuperamos en sublist.
+subset.head()
+
+
+data[1:25] <-- Indicamos el rango de las columnas que queremos visualizar del df data.
+data1 = data[data['Day Mins']>300] <-- Filtramos y generamos un dataframe con las filas que en el campo Day Mins el valor sea mayor que 300.
+data2 = data[data['State']== 'NY'] <-- Filtramos y generamos un dataframe con las filas que en el campo State el valor sea igual a NY.
+data3 = data[(data['Day Mins']>300) & (data['State']=='NY')] <--- Filtramos y generamos un dataframe con las filas que en el campo Day Mins el valor sea mayor que 300 y State sea igual a NY. Cumplir las 2 condiciones.
+data4 = data[(data['Day Mins']>300) | (data['State']=='NY')] <-- Filtramos y generamos un dataframe con las filas que al menos cumplan con 1 de los 2 valores  State sea igual a NY o Day Mins el valor sea mayor que 300.
+data5 = data[data['Day Calls']<data['Night Calls']] <-- Filtramos y generamos un dataframe con las filas donde Day Calls sea menor que Night Calls.
+subset_first_50 = data[['Day Mins', 'Night Mins', 'Account Length']][:50] <-- Filtramos y generamos un df indicando las columnas que se necesitan y el numero de filas en este caso de 0 a 50.
+data.iloc[1:10, 3:6] <-- Filtramos y generamos un DF con los indices definidos en la propiedad iloc indices de columnas e indice de filas.
+data.iloc[1:10, [2,5,8]] <-- Filtramos y generamos un DF con los indices definidos en la propiedad iloc en este caso se indican columnas especificas que no son consecutivas.
+data.iloc[[1,3,5,10], [2,5,8]] <-- Filtra por filas y columnas especificas.
+data.loc[1:10, ['Area Code', 'VMail Plan', 'Night Calls']] <- Con la propiedad loc se filtra por posición de la fila y por nombre de la columna.
+data['Total Mins'] = data['Day Mins'] + data['Night Mins'] + data['Eve Mins'] <-- Creamos una nueva columa en el df apartir de la suma de 2 columnas. En automatico se agrega la columna al df.
