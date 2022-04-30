@@ -454,3 +454,44 @@ data.iloc[1:10, [2,5,8]] <-- Filtramos y generamos un DF con los indices definid
 data.iloc[[1,3,5,10], [2,5,8]] <-- Filtra por filas y columnas especificas.
 data.loc[1:10, ['Area Code', 'VMail Plan', 'Night Calls']] <- Con la propiedad loc se filtra por posición de la fila y por nombre de la columna.
 data['Total Mins'] = data['Day Mins'] + data['Night Mins'] + data['Eve Mins'] <-- Creamos una nueva columa en el df apartir de la suma de 2 columnas. En automatico se agrega la columna al df.
+
+================== Creación de numeros aleatorios.
+
+Para esto usaremos la libreria numpy por lo cual debemos importarla y en este ejemplo usaremos el atributo randint que genera un numero aleatorio entero que se define entre parentesis en este ejemplo del 1 al 100.
+----
+import numpy as np
+np.random.randint(1,100)
+
+np.random.random() <-- Por default con la funcion random genera un numero aleatorio entre 0 y 1 con decimales.
+
+----
+def randint_list(n, a, b):
+    x = []
+    for i in range (n):
+        x.append(np.random.randint(a,b))
+    return x
+
+randint_list(25, 1, 50)  <-- Definimos con una funcion el imprimir 25 numeros de entre 1 y 50.
+
+----
+import random
+for i in range(10):
+    print(random.randrange(0,100, 7)) <-- Imprimimos un rango de 10 numeros que esten entre 0 y 100 pero se indica que solo imprima los que son multiplos de 7.
+
+---- Metodo ashuffle, se barajean los valores en un array.
+
+a = np.arange(100) #Se genera un arreglo de 100 numeros
+np.random.shuffle(a) <-- Se imprimen los numeros del 1 al 100 pero en desorden.
+a
+
+---- Metodo choice elige un objeto al azar en este caso sera un objeto de la comlumna column list:
+
+np.random.choice(column_list)
+
+---- Metodo para generar numeros aleatorios con seeds.
+
+#Cuando necesitamos mantener un conjunto de numeros aleatorios que ya se genero y necesitamos poder utilizarlo en un analisis posterior. La semilla (seed) indica en que numero empezara la generación de numeros aleatorio. El establecer una semilla es sumamente importante para que nos regrese siempre el mismo conjunto de numeros generados. El valor de la semilla puede ser caulquiera en este caso se uso el año 2018.
+
+np.random.seed(2018)
+for i in range(5):
+    print(np.random.random())
